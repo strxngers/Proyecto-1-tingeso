@@ -3,7 +3,6 @@ package com.example.demo.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -18,9 +17,6 @@ public class pagoEntity {
     private Integer id_pago;
     private Integer monto;
     private Date fecha;
-    @NonNull
-    @ManyToOne
-    @JoinColumn(name="id_proveedor", nullable=false)
-    private proveedorEntity proveedor;
+    private Integer id_proveedor;
 
 }

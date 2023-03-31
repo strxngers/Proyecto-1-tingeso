@@ -18,6 +18,6 @@ public class proveedorEntity {
     private Integer id_proveedor;
     private String nombre;
     private String categoria;
-    private Boolean retencion;
+    private String retencion;
 
 }
