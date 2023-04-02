@@ -5,10 +5,7 @@ import com.example.demo.services.proveedorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
@@ -17,15 +14,15 @@ import java.util.ArrayList;
 public class proveedorController {
     @Autowired
     private proveedorService proveedorService;
-/*
+
     @GetMapping("/proveedores")
     public String listado(Model model){
         ArrayList<proveedorEntity> proveedores = proveedorService.listaProveedores();
         model.addAttribute("proveedores",proveedores);
-        return "index";
+        return "listaDeProveedores";
     }
-*/
-    @GetMapping("/lista")
+
+    @GetMapping("/index")
     public String cualquiercosa(){
         return "index";
     }
@@ -34,7 +31,8 @@ public class proveedorController {
     public String nuevoProveedor(@RequestParam("nombre") String nombre,
                                  @RequestParam("id_proveedor") Integer id_proveedor,
                                  @RequestParam("retencion") String retencion,
-                                 @RequestParam("categoria") String categoria){
+                                 @RequestParam("categoria") String categoria,
+                                 Model model){
         proveedorService.saveProveedor(id_proveedor,nombre,categoria,retencion);
         return "redirect:/index";
     }

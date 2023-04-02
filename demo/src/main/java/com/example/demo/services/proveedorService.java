@@ -15,13 +15,16 @@ public class proveedorService {
 
     /* Método que crea un proveedor con la información entregada
     */
-    public proveedorEntity saveProveedor(Integer id_proveedor, String nombre, String categoria, String retencion){
+    public proveedorEntity saveProveedor(Integer id_proveedor, String nombre, String categoria, String retencion) {
         proveedorEntity proveedor = new proveedorEntity();
         proveedor.setId_proveedor(id_proveedor);
         proveedor.setNombre(nombre);
         proveedor.setCategoria(categoria);
         proveedor.setRetencion(retencion);
-        return proveedorRepository.save(proveedor);
+        if (!estaRegistrado(proveedor)) {
+            return proveedorRepository.save(proveedor);
+        }else
+            return null;
     }
 
     /* Método que pone los proveedores en un array

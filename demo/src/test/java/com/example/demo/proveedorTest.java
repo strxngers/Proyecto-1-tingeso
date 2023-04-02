@@ -18,9 +18,7 @@ class proveedorTest {
     void estaRegistradoTest(){
         proveedorEntity proveedor = servicio.saveProveedor(9999,"nombre","A","No");
         boolean resultado = servicio.estaRegistrado(proveedor);
-
         assertTrue(resultado);
-
         servicio.delete(proveedor);
     }
 }

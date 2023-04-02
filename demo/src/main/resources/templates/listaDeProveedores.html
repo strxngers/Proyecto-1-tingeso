@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <title>Lista de proveedores</title>
+    <style>
+        .title{
+            margin-top: 3vh;
+        }
+
+        body{
+            background: #69c3f7
+        }
+
+        .btn1{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .content-table{
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            min-width: 400px;
+            border-radius: 5px 5px 0 0;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .content-table thead tr{
+            background-color: #65afa5;
+            color: #ffffff;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .content-table td{
+            padding: 12px 15px;
+        }
+        .content-table tbody tr{
+            border-bottom: 1px solid #dddddd;
+        }
+        .content-table tbody tr:nth-of-type(even){
+            background-color: #f3f3f3;
+        }
+        .content-table tbody tr:last-of-type{
+            border-bottom: 2px solid #009879;
+        }
+        .content-table tbody tr.active-row{
+            font-weight: bold;
+            color: #009879;
+        }
+        .header .btn button:hover{
+            background-color: #e2f1f8;
+            color: #ffbc0e;
+            transform: scale(1.1);
+        }
+        .header .btn-2 button {
+            margin-left: 20px;
+            font-weight: 700;
+            color: #1b3039;
+            padding: 9px 25px;
+            background: #eceff1;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease 0s;
+        }
+        .header .btn-2 button:hover{
+            background-color: #e2f1f8;
+            color: #ffbc0e;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<div class="title">
+    <h1 align="center" style="color:white;">Registrar proveedor</h1></div>
+<nav>
+<body>
+<header>
+    <div class="btn1">
+        <a class="btn" href="/"><button>Volver al menú principal</button></a>
+        <a class="btn" href="/index"><button>Registrar un nuevo proveedor</button></a>
+    </div>
+    <div th:align = "center" class = "container my-2">
+        <table th:border = "1" class = "content-table">
+            <thead>
+            <tr>
+                <th>Codigo</th>
+                <th>Nombre</th>
+                <th>Categoria</th>
+                <th>Retencion</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="proveedores:${proveedores}">
+                <td th:text="${proveedores.id_proveedor}"></td>
+                <td th:text="${proveedores.nombre}"></td>
+                <td th:text="${proveedores.categoria}"></td>
+                <td th:text="${proveedores.retencion}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</header>
+</body>
+</html>

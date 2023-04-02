@@ -18,8 +18,9 @@
         }
         .cajitas{
             margin: 0 auto;
+            justify-content: center;
             float: none;
-            width: 70%;
+            width: 100%;
             margin-top: 2vh;
         }
     </style>
@@ -27,51 +28,40 @@
 <body>
 <header class="header">
     <div class="title">
-        <h1 align="center" style="color:white;">MilkStgo</h1></divclas>
+        <h1 align="center" style="color:white;">Registrar proveedor</h1></div>
     <nav>
     </nav>
     <div class="btn1">
         <a class="btn" href="/"><button>Volver al menú principal</button></a>
-        <a class="btn" href="/"><button>Registrar otro proveedor</button></a>
+        <a class="btn" href="/proveedores"><button>Lista proveedores</button></a>
     </div>
 </header>
-<div class="container all">
-    <div class="input-group cajitas">
-        <div class="input-group-prepend">
-            <span class="input-group-text" id="">Nombre proveedor</span>
-        </div>
-        <input type="text" class="form-control">
-    </div>
-    <div class="input-group cajitas">
-        <div class="input-group-prepend">
-            <span class="input-group-text" id="">Código</span>
-        </div>
-        <input type="text" class="form-control">
-    </div>
+<div class="container cajitas">
+    <form  th:action="@{/index}" method="POST">
+        <div class="formcontainer">
+            <hr/>
+            <div class="container">
+                <div>
+                    <label><strong>Código</strong></label>
+                    <input type="text" id = "id_proveedor"
+                           placeholder="Ingrese el código del proveedor" name="id_proveedor" required>
 
-    <div class="input-group cajitas">
-        <div class="input-group-prepend">
-            <span class="input-group-text" id="">Retención</span>
-        </div>
-        <input type="text" class="form-control">
-    </div>
+                    <label><strong>Nombre</strong></label>
+                    <input type="text" id = "nombre"
+                           placeholder="Ingrese el nombre del proveedor" name="nombre" required>
 
-    <div class="input-group mb-3 cajitas">
-        <div class="input-group-prepend">
-            <label class="input-group-text" for="inputGroupSelect01">Options</label>
+                    <label><strong>Categoría</strong></label>
+                    <input type="text" id = "categoria"
+                           placeholder="Ingrese la categoria del proveedor" name="categoria" required>
+
+                    <label><strong>Retención</strong></label>
+                    <input type="text" id = "fecha"
+                           placeholder="Ingrese retención del proveedor (Si / No)" name="retencion" required>
+                </div>
+            </div>
+            <button class="btn1" type="submit">Registrar Proveedor</button>
         </div>
-        <select class="custom-select" id="inputGroupSelect01">
-            <option selected>Choose...</option>
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
-            <option value="D">D</option>
-        </select>
-    </div>
-    <form action="/enviar" method="post">
-        <div class="btn1">
-            <button type="submit">Registrar Proveedor</button>
-        </div>
+
     </form>
 </div>
 </body>
