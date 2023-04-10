@@ -22,18 +22,18 @@ public class proveedorController {
         return "listaDeProveedores";
     }
 
-    @GetMapping("/index")
-    public String cualquiercosa(){
-        return "index";
+    @GetMapping("/registrarProveedor")
+    public String proveedor(){
+        return "regitrarProveedor";
     }
 
-    @PostMapping("/index")
+    @PostMapping("/registrarProveedor")
     public String nuevoProveedor(@RequestParam("nombre") String nombre,
                                  @RequestParam("id_proveedor") Integer id_proveedor,
                                  @RequestParam("retencion") String retencion,
                                  @RequestParam("categoria") String categoria,
                                  Model model){
         proveedorService.saveProveedor(id_proveedor,nombre,categoria,retencion);
-        return "redirect:/index";
+        return "redirect:/registrarProveedor";
     }
 }

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+
+  <head>
+  <meta charset="UTF-8">
+  <title>Ingresar Calidad</title>
+  <style>
+    .title{
+      margin-top: 3vh;
+    }
+    body{
+      background-color: #69c3f7;
+    }
+    .container{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 2%;
+    }
+    .btn1{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .form1{
+      disp;
+      border: 1px solid rgb(82, 82, 173);
+      padding: 30px;
+      border-radius: 30px;
+      margin-left: 300px;
+      margin-right: 300px;
+      color: white;
+    }
+
+  </style>
+</head>
+<body>
+<header class="header">
+  <div class="title">
+    <h1 align="center" style="color:white;">Cargar el archivo de datos sobre calidad de la leche</h1></div>
+  <nav>
+  </nav>
+  <div class="btn1">
+    <a class="btn" href="/"><button>Volver al menú principal</button></a>
+    <a class="btn-2" href="/fileInformation"><button>Ver el último CSV cargado</button></a>
+  </div>
+</header>
+<div class = "f">
+  <div class="container">
+    <form th:action="@{/calidadFileUpload}" method="POST" enctype="multipart/form-data">
+      <br>
+      <input type="file" class="form-control" name="file" accept = ".csv">
+      <br>
+      <input class = "btn btn-primary"
+             type="submit" value="Cargar el archivo a la Base de Datos">
+    </form>
+    <br>
+    <div>
+      <b> <h2 th:text="${mensaje}"></h2></b>
+    </div>
+  </div>
+</div>
+<br>
+<hr>
+
+<div class = "form1">
+  <h5><b>Recuerde que debe cargar un archivo Excel de extensión .csv!</b></h5>
+</div>
+</body>
+</html>
