@@ -1,6 +1,6 @@
 package com.example.demo.controllers;
 
-import com.example.demo.entities.proveedorEntity;
+import com.example.demo.entities.ProveedorEntity;
 import com.example.demo.services.proveedorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +17,7 @@ public class proveedorController {
 
     @GetMapping("/proveedores")
     public String listado(Model model){
-        ArrayList<proveedorEntity> proveedores = proveedorService.listaProveedores();
+        ArrayList<ProveedorEntity> proveedores = proveedorService.listaProveedores();
         model.addAttribute("proveedores",proveedores);
         return "listaDeProveedores";
     }

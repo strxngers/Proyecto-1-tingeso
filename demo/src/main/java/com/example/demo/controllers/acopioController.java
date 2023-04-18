@@ -25,8 +25,8 @@ public class acopioController {
     @PostMapping("/fileUpload")
     public String upload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
         acopioData.guardar(file);
-        redirectAttributes.addFlashAttribute("mensaje", "¡Archivo cargado correctamente!");
+        //redirectAttributes.addFlashAttribute("mensaje", "¡Archivo cargado correctamente!");
         acopioData.leerCsv("Acopio.csv");
-        return "redirect:/uploadData";
+        return "redirect:/uploadAcopioData";
     }
 }

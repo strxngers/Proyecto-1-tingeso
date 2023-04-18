@@ -1,15 +1,13 @@
 package com.example.demo.services;
 
-import com.example.demo.entities.acopioEntity;
-import com.example.demo.repositories.acopioRepository;
+import com.example.demo.entities.AcopioEntity;
+import com.example.demo.repositories.AcopioRepository;
 import lombok.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.persistence.GeneratedValue;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -17,17 +15,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
 
 @Service
 public class acopioService {
     @Autowired
-    acopioRepository acopioRepository;
+    AcopioRepository acopioRepository;
 
+    Integer mitadMes = 15;
     private final Logger logg = LoggerFactory.getLogger(acopioService.class);
 
-    public ArrayList<acopioEntity> obtenerData(){
-        return (ArrayList<acopioEntity>) acopioRepository.findAll();
+    public ArrayList<AcopioEntity> obtenerData(){
+        return (ArrayList<AcopioEntity>) acopioRepository.findAll();
     }
 
     @Generated
@@ -56,7 +55,6 @@ public class acopioService {
     public void leerCsv(String direccion){
         String texto = "";
         BufferedReader bf = null;
-        acopioRepository.deleteAll();
         try{
             bf = new BufferedReader(new FileReader(direccion));
             String temp = "";
@@ -67,14 +65,14 @@ public class acopioService {
                     count = 0;
                 }
                 else{
-                    guardarDataDB(bfRead.split(";")[0], bfRead.split(";")[1], Integer.parseInt(bfRead.split(";")[2]), bfRead.split(";")[3]);
+                    guardarDataDB(bfRead.split(";")[0], bfRead.split(";")[1], Integer.parseInt(bfRead.split(";")[2]), Integer.parseInt(bfRead.split(";")[3]));
                     temp = temp + "\n" + bfRead;
                 }
             }
             texto = temp;
-            System.out.println("Archivo leido exitosamente");
+            //System.out.println("Archivo leido exitosamente");
         }catch(Exception e){
-            System.err.println("No se encontro el archivo");
+            //System.err.println("No se encontro el archivo");
         }finally{
             if(bf != null){
                 try{
@@ -86,21 +84,30 @@ public class acopioService {
         }
     }
 
-    public void guardarData(acopioEntity data){
+    public void guardarData(AcopioEntity data){
         acopioRepository.save(data);
     }
 
-    public void guardarDataDB(String fecha, String turno, Integer id_proveedor, String kls_leche){
-        acopioEntity newData = new acopioEntity();
+    public void guardarDataDB(String fecha, String turno, Integer id_proveedor, Integer kls_leche) {
+        AcopioEntity newData = new AcopioEntity();
         newData.setFecha(fecha);
+        newData.setQuincena(quincena(fecha));
         newData.setTurno(turno);
         newData.setId_proveedor(id_proveedor);
         newData.setKls_leche(kls_leche);
         guardarData(newData);
     }
 
+    public Integer quincena(String fecha){
+        if(Integer.parseInt(fecha.substring(8)) <= mitadMes){
+            return 1;
+        }else{
+            return 2;
+        }
+    }
 
-    public void eliminarData(ArrayList<acopioEntity> datas){
+    @Generated
+    public void eliminarData(ArrayList<AcopioEntity> datas){
         acopioRepository.deleteAll(datas);
     }
 

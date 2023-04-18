@@ -1,7 +1,7 @@
 package com.example.demo.services;
 
-import com.example.demo.entities.calidadEntity;
-import com.example.demo.repositories.calidadRepository;
+import com.example.demo.entities.CalidadEntity;
+import com.example.demo.repositories.CalidadRepository;
 import lombok.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +20,12 @@ import java.util.ArrayList;
 @Service
 public class calidadService {
     @Autowired
-    calidadRepository calidadRepository;
+    CalidadRepository calidadRepository;
 
     private final Logger logg = LoggerFactory.getLogger(calidadService.class);
 
-    public ArrayList<calidadEntity> obtenerData(){
-        return (ArrayList<calidadEntity>) calidadRepository.findAll();
+    public ArrayList<CalidadEntity> obtenerData(){
+        return (ArrayList<CalidadEntity>) calidadRepository.findAll();
     }
 
     @Generated
@@ -84,20 +84,20 @@ public class calidadService {
         }
     }
 
-    public void guardarData(calidadEntity data){
+    public void guardarData(CalidadEntity data){
         calidadRepository.save(data);
     }
 
     public void guardarDataDB(Integer id_proveedor, Integer por_grasa, Integer por_solidos){
-        calidadEntity newData = new calidadEntity();
+        CalidadEntity newData = new CalidadEntity();
         newData.setId_proveedor(id_proveedor);
         newData.setPor_grasa(por_grasa);
         newData.setPor_solidos(por_solidos);
         guardarData(newData);
     }
 
-
-    public void eliminarData(ArrayList<calidadEntity> datas){
+    @Generated
+    public void eliminarData(ArrayList<CalidadEntity> datas){
         calidadRepository.deleteAll(datas);
     }
 }

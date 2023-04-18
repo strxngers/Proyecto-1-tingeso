@@ -23,7 +23,7 @@ public class calidadController {
     @PostMapping("/calidadFileUpload")
     public String upload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
         calidadData.guardar(file);
-        redirectAttributes.addFlashAttribute("mensaje", "¡Archivo cargado correctamente!");
+        //redirectAttributes.addFlashAttribute("mensaje", "¡Archivo cargado correctamente!");
         calidadData.leerCsv("Calidad.csv");
         return "redirect:/cargarData";}
 }
