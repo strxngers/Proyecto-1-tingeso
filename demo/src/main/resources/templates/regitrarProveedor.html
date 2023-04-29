@@ -12,9 +12,58 @@
             background: #69c3f7
         }
         .btn1{
+            margin-top: 1vh;
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+        .header .btn button{
+            margin-left: 20px;
+            font-weight: 700;
+            color: #1b3039;
+            padding: 9px 25px;
+            background: #eceff1;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease 0s;
+        }
+        .header .btn button:hover{
+            background-color: #e2f1f8;
+            color: #ffbc0e;
+            transform: scale(1.1);
+        }
+        .header .btn-2 button {
+            margin-left: 20px;
+            font-weight: 700;
+            color: #1b3039;
+            padding: 9px 25px;
+            background: #eceff1;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease 0s;
+        }
+        input[type=text], input[type=password] {
+            width: 100%;
+            padding: 16px 8px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        .formcontainer {
+            text-align: left;
+            margin: 24px 50px 12px;
+        }
+        .container {
+            padding: 16px 0;
+            text-align:left;
+        }
+        span.psw {
+            float: right;
+            padding-top: 0;
+            padding-right: 15px;
         }
         .cajitas{
             margin: 0 auto;
@@ -59,7 +108,8 @@
                            placeholder="Ingrese retención del proveedor (Si / No)" name="retencion" required>
                 </div>
             </div>
-            <button class="btn1" type="submit">Registrar Proveedor</button>
+            <input class = "btn btn-primary"
+                   type="submit" value="Registrar Proveedor">
         </div>
 
     </form>

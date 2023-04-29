@@ -1,7 +1,9 @@
 package com.example.demo.services;
 
 import com.example.demo.entities.AcopioEntity;
+import com.example.demo.entities.ProveedorEntity;
 import com.example.demo.repositories.AcopioRepository;
+import com.example.demo.repositories.ProveedorRepository;
 import lombok.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,20 +16,21 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class acopioService {
+public class AcopioService {
     @Autowired
     AcopioRepository acopioRepository;
+    @Autowired
+    ProveedorRepository proveedorRepository;
 
     Integer mitadMes = 15;
-    private final Logger logg = LoggerFactory.getLogger(acopioService.class);
-
-    public ArrayList<AcopioEntity> obtenerData(){
-        return (ArrayList<AcopioEntity>) acopioRepository.findAll();
-    }
+    private final Logger logg = LoggerFactory.getLogger(AcopioService.class);
 
     @Generated
     public String guardar(MultipartFile file){
@@ -55,6 +58,7 @@ public class acopioService {
     public void leerCsv(String direccion){
         String texto = "";
         BufferedReader bf = null;
+        acopioRepository.deleteAll();
         try{
             bf = new BufferedReader(new FileReader(direccion));
             String temp = "";
@@ -84,26 +88,50 @@ public class acopioService {
         }
     }
 
+    @Generated
     public void guardarData(AcopioEntity data){
         acopioRepository.save(data);
     }
 
+    @Generated
     public void guardarDataDB(String fecha, String turno, Integer id_proveedor, Integer kls_leche) {
         AcopioEntity newData = new AcopioEntity();
-        newData.setFecha(fecha);
+        newData.setFecha(LocalDate.parse(fecha, DateTimeFormatter.ofPattern("yyyy/MM/dd")));
         newData.setQuincena(quincena(fecha));
         newData.setTurno(turno);
-        newData.setId_proveedor(id_proveedor);
         newData.setKls_leche(kls_leche);
-        guardarData(newData);
+        Optional<ProveedorEntity> proveedor = proveedorRepository.findById(id_proveedor);
+        newData.setProveedor(proveedor.get());
+        if(!exist(newData)){
+            guardarData(newData);
+        }
+        //guardarData(newData);
     }
+
+    @Generated
+    public boolean exist(AcopioEntity ac){
+        List<AcopioEntity> acopios = acopioRepository.findAll();
+        boolean flag = false;
+        Integer pac1 = ac.getProveedor().getId_proveedor();
+        LocalDate fecha = ac.getFecha();
+        String turno = ac.getTurno();
+        for (AcopioEntity acopio : acopios) {
+            if (acopio.getProveedor().getId_proveedor().equals(pac1) && acopio.getFecha().equals(fecha) && acopio.getTurno().equals(turno)) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
+
 
     public Integer quincena(String fecha){
         if(Integer.parseInt(fecha.substring(8)) <= mitadMes){
             return 1;
-        }else{
+        }else if(Integer.parseInt(fecha.substring(8)) >= mitadMes){
             return 2;
-        }
+        }else
+            return null;
     }
 
     @Generated

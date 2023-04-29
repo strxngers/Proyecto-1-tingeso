@@ -18,7 +18,33 @@
             justify-content: center;
             align-items: center;
         }
-
+        .header .btn button{
+            margin-left: 20px;
+            font-weight: 700;
+            color: #1b3039;
+            padding: 9px 25px;
+            background: #eceff1;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease 0s;
+        }
+        .header .btn button:hover{
+            background-color: #e2f1f8;
+            color: #ffbc0e;
+            transform: scale(1.1);
+        }
+        .header .btn-2 button {
+            margin-left: 20px;
+            font-weight: 700;
+            color: #1b3039;
+            padding: 9px 25px;
+            background: #eceff1;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease 0s;
+        }
         .content-table{
             border-collapse: collapse;
             margin: 25px 0;
@@ -52,38 +78,21 @@
             font-weight: bold;
             color: #009879;
         }
-        .header .btn button:hover{
-            background-color: #e2f1f8;
-            color: #ffbc0e;
-            transform: scale(1.1);
-        }
-        .header .btn-2 button {
-            margin-left: 20px;
-            font-weight: 700;
-            color: #1b3039;
-            padding: 9px 25px;
-            background: #eceff1;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease 0s;
-        }
-        .header .btn-2 button:hover{
-            background-color: #e2f1f8;
-            color: #ffbc0e;
-            transform: scale(1.1);
-        }
+
     </style>
 </head>
-<div class="title">
-    <h1 align="center" style="color:white;">Lista de proveedores</h1></div>
-<nav>
-<body>
-<header>
-    <div class="btn1">
-        <a class="btn" href="/"><button>Volver al menú principal</button></a>
-        <a class="btn" href="/registrarProveedor"><button>Registrar un nuevo proveedor</button></a>
-    </div>
+<header class="header">
+    <div class="title">
+        <h1 align="center" style="color:white;">Lista de proveedores</h1></div>
+    <nav>
+    </nav>
+    <body>
+    <header>
+        <div class="btn1">
+            <a class="btn" href="/"><button>Volver al menú principal</button></a>
+            <a class="btn" href="/registrarProveedor"><button>Registrar un nuevo proveedor</button></a>
+        </div>
+</header>
     <div th:align = "center" class = "container my-2">
         <table th:border = "1" class = "content-table">
             <thead>

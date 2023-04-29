@@ -1,7 +1,8 @@
 package com.example.demo.controllers;
 
 import com.example.demo.entities.ProveedorEntity;
-import com.example.demo.services.proveedorService;
+import com.example.demo.services.PagoService;
+import com.example.demo.services.ProveedorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,9 +12,9 @@ import java.util.ArrayList;
 
 @Controller
 @RequestMapping
-public class proveedorController {
+public class ProveedorController {
     @Autowired
-    private proveedorService proveedorService;
+    private ProveedorService proveedorService;
 
     @GetMapping("/proveedores")
     public String listado(Model model){

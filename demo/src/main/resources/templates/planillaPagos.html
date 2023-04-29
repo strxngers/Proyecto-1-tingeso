@@ -2,9 +2,156 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Planilla Pago</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+
+<head>
+    <style>
+        .title{
+            margin-top: 3vh;
+        }
+
+        body{
+            background: #69c3f7
+        }
+
+        .btn1{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header .btn button{
+            margin-left: 20px;
+            font-weight: 700;
+            color: #1b3039;
+            padding: 9px 25px;
+            background: #eceff1;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease 0s;
+        }
+        .header .btn button:hover{
+            background-color: #e2f1f8;
+            color: #ffbc0e;
+            transform: scale(1.1);
+        }
+
+        .header .btn-2 button {
+            margin-left: 20px;
+            font-weight: 700;
+            color: #1b3039;
+            padding: 9px 25px;
+            background: #eceff1;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease 0s;
+        }
+
+        .content-table{
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            min-width: 400px;
+            border-radius: 5px 5px 0 0;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .content-table thead tr{
+            background-color: #009879;
+            color: #ffffff;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .content-table td{
+            padding: 12px 15px;
+        }
+        .content-table tbody tr{
+            border-bottom: 1px solid #dddddd;
+        }
+        .content-table tbody tr:nth-of-type(even){
+            background-color: #f3f3f3;
+        }
+        .content-table tbody tr:last-of-type{
+            border-bottom: 2px solid #009879;
+        }
+        .content-table tbody tr.active-row{
+            font-weight: bold;
+            color: #009879;
+        }
+    </style>
 </head>
 <body>
+<header class="header">
+    <div class="title">
+        <h1 align="center" style="color:white;">Información sobre pagos</h1></div>
+    <nav>
+    </nav>
+    <div class="btn1">
+        <a class="btn" href="/"><button>Volver al menú principal</button></a>
+    </div>
+</header>
+<div align = "center" class = "container my-2">
+    <card>
+        <table border = "1" class = "content-table">
+            <thead>
+            <tr>
+                <th style = "color:white">Proveedor</th>
+                <th style = "color:white">Código proveedor</th>
+                <th style = "color:white">Quincena</th>
+                <th style = "color:white">Total kilos de leche</th>
+                <th style = "color:white">Nro de envios</th>
+                <th style = "color:white">Promedio de kls diarios</th>
+                <th style = "color:white">Porcentaje de grasa</th>
+                <th style = "color:white">Porcentaje de solidos totales</th>
+                <th style = "color:white">Variación negativa de leche</th>
+                <th style = "color:white">Variación negativa de grasa</th>
+                <th style = "color:white">Variación negativa de ST</th>
+                <th style = "color:white">Pago por el total de leche</th>
+                <th style = "color:white">Pago por el porcentaje grasa total</th>
+                <th style = "color:white">Pago por los solidos totales</th>
+                <th style = "color:white">Bono por frecuencia</th>
+                <th style = "color:white">Dcto var leche</th>
+                <th style = "color:white">Dcto var grasas</th>
+                <th style = "color:white">Dcto var solidos</th>
+                <th style = "color:white">Pago Total</th>
+                <th style = "color:white">Monto retención</th>
+                <th style = "color:white">Monto final </th>
+            </tr>
+            </thead>
+            <tbody>
+            <card>
+                <tr th:each="pagos:${pagos}">
+                    <td th:text="${pagos.nombreProveedor}"></td>
+                    <td th:text="${pagos.codigo}"></td>
+                    <td th:text="${pagos.fecha}"></td>
+                    <td th:text="${pagos.totalKlsLeche}"></td>
+                    <td th:text="${pagos.nroDiasDeEnvio}"></td>
+                    <td th:text="${pagos.promDiarioKlsLeche}"></td>
+                    <td th:text="${pagos.porGrasa}"></td>
+                    <td th:text="${pagos.varGrasa}"></td>
+                    <td th:text="${pagos.solidosTotales}"></td>
+                    <td th:text="${pagos.varST}"></td>
+                    <td th:text="${pagos.variacionLeche}"></td>
+                    <td th:text="${pagos.pagoXLeche}"></td>
+                    <td th:text="${pagos.pagoXGrasa}"></td>
+                    <td th:text="${pagos.pagoXST}"></td>
+                    <td th:text="${pagos.bonoFrecuencia}"></td>
+                    <td th:text="${pagos.dctoVarLeche}"></td>
+                    <td th:text="${pagos.dctoVarGrasa}"></td>
+                    <td th:text="${pagos.dctoVarST}"></td>
+                    <td th:text="${pagos.pagoTotal}"></td>
+                    <td th:text="${pagos.retencion}"></td>
+                    <td th:text="${pagos.montoFinal}"></td>
 
+                </tr>
+            </card>
+            </tbody>
+        </table>
+    </card>
+</div>
 </body>
-</html>
+</html>>

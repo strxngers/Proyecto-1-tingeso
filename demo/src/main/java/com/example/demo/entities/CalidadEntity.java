@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "calidad")
@@ -22,6 +19,8 @@ public class CalidadEntity {
     private Integer id_calidad;
     private Integer por_grasa;
     private Integer por_solidos;
-    private Integer id_proveedor;
+    @ManyToOne
+    @JoinColumn(name = "id_proveedor")
+    private ProveedorEntity proveedor;
 
 }
