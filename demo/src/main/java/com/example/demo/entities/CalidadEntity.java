@@ -22,5 +22,7 @@ public class CalidadEntity {
     @ManyToOne
     @JoinColumn(name = "id_proveedor")
     private ProveedorEntity proveedor;
-
+    public Integer getPor_solidos() {
+        return por_solidos;
+    }
 }

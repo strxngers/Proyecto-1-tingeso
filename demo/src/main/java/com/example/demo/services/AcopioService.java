@@ -134,9 +134,5 @@ public class AcopioService {
             return null;
     }
 
-    @Generated
-    public void eliminarData(ArrayList<AcopioEntity> datas){
-        acopioRepository.deleteAll(datas);
-    }
 
 }

@@ -5,6 +5,7 @@ import com.example.demo.entities.CalidadEntity;
 import com.example.demo.entities.PagoEntity;
 import com.example.demo.entities.ProveedorEntity;
 import com.example.demo.repositories.AcopioRepository;
+import com.example.demo.repositories.CalidadRepository;
 import com.example.demo.repositories.PagoRepository;
 import com.example.demo.repositories.ProveedorRepository;
 import lombok.Generated;
@@ -25,6 +26,8 @@ public class PagoService {
     private ProveedorService proveedorService;
     @Autowired
     private ProveedorRepository proveedorRepository;
+    @Autowired
+    private CalidadRepository calidadRepository;
 
     @Generated
     public List<PagoEntity> planillaPago(){
@@ -41,6 +44,8 @@ public class PagoService {
         }
     }
 
+    // PROBLEMAS: % DE SOLIDOS
+    //            PAGO TOTAL
     @Generated
     public void calcularPago(Integer id_proveedor){
         ProveedorEntity proveedor = proveedorRepository.findByIdProveedor(id_proveedor);    // Encontrar al proveedor para poder saber cuantos kilos de leche trajo
@@ -55,29 +60,101 @@ public class PagoService {
         Integer dias = getDiasEnvio(id_proveedor);  // días que mandó leche
         Integer porGrasa = calidad.getPor_grasa();  // grasa del acopio
         pago.setPorGrasa(porGrasa); // Cambiamos el % de grasa
-        Integer solTotales = calidad.getPor_solidos();  // st del acopio
-        pago.setSolidosTotales(solTotales); // cambiamos el % de st
-        double bonos = bonificaciones(id_proveedor);    // Calculo de bonos NO FUNCIONA
-        pago.setFecha(nuevaFecha(acopiosProveedor.get(0).getFecha().toString()));   // formato de fecha
-        pago.setCodigo(id_proveedor);
-        pago.setProveedor(proveedor);
-        pago.setNombreProveedor(proveedor.getNombre());
+        pago.setSolidosTotales(calidad.getPor_solidos()); // cambiamos el % de st
+        // Info proveedor fecha
+        infoProveedorFecha(proveedor,acopiosProveedor,pago);
+        //
         pago.setNroDiasDeEnvio(dias);
+        // Pagos
         pago.setPromDiarioKlsLeche(promKls(klsLeche, dias));
         pago.setPagoXLeche(montoCategoria(proveedor.getCategoria(),klsLeche));
         pago.setPagoXGrasa(pagoPorGrasa(porGrasa,klsLeche));
-        pago.setPagoXST(pagoPorSolidos(solTotales,klsLeche));
+        pago.setPagoXST(pagoPorSolidos(calidad.getPor_solidos(),klsLeche));
+        double bonos = bonificaciones(id_proveedor, pago.getPagoXLeche());    // Calculo de bonos
         pago.setBonoFrecuencia(bonos);
-        todasLasVariaciones(id_proveedor,pago, klsLeche, porGrasa, solTotales);
+        // Pago por leche
         double pagoLeche = pagoAcopioLeche(proveedor.getCategoria(),klsLeche,porGrasa,calidad.getPor_solidos(), proveedor.getId_proveedor());
-        double descuentos = descuentos(pagoLeche,pago.getVariacionLeche(),pago.getVarGrasa(),pago.getVarST());
-        double pagoTotal = pagoLeche-descuentos;
-        pago.setPagoTotal(pagoTotal);
-        pago.setRetencion(retencion(proveedor)*pagoTotal);
-        pago.setMontoFinal(pagoTotal - retencion(proveedor)*pagoTotal);
+        // Variaciones
+        todasLasVariaciones(id_proveedor,pago, klsLeche, porGrasa, calidad.getPor_solidos());
+        // Descuentos
+        descuentos(pago,pagoLeche);
+        // pago total
+        pagoTotal(pago, pagoLeche);
+        pago.setRetencion(retencion(proveedor, pago.getPagoTotal()));
+        pago.setMontoFinal(pago.getPagoTotal() - pago.getRetencion());
         if (!exist(pago)){
             pagoRepository.save(pago);
         }
+    }
+
+    public double dctoLeche(double variacion, double pagoTotal){
+        Integer desc = 0;
+        if (variacion >= 0 && variacion <= 8){
+            desc = 0;
+        }else if (variacion > 8 && variacion < 26){
+            desc = 7;
+        }else if (variacion > 25 && variacion < 46){
+            desc = 15;
+        }else if (variacion > 46){
+            desc = 30;
+        }
+        return desc*pagoTotal;
+    }
+
+    public double dctoGrasa(double variacion, double pagoTotal){
+        Integer desc = 0;
+        if (variacion >= 0 && variacion <= 15){
+            desc = 0;
+        } else if (variacion > 15 && variacion < 26){
+            desc = 12;
+        } else if (variacion > 25 && variacion < 41){
+            desc = 20;
+        } else if (variacion > 40){
+            desc = 30;
+        }
+        return desc*pagoTotal;
+    }
+
+    public double dctoSolidos(double variacion, double pagoTotal){
+        Integer desc = 0;
+        if (variacion >= 0 && variacion <= 6){
+            desc = 0;
+        }else if (variacion > 6 && variacion < 13){
+            desc = 18;
+        }else if (variacion > 12 && variacion < 36){
+            desc = 27;
+        }else if (variacion > 35){
+            desc = 45;
+        }
+        return Math.round(desc*pagoTotal);
+    }
+
+    @Generated
+    public double pagoAcopioLeche(String cat, Integer klsLeche, Integer porGrasa, Integer porST, Integer id_proveedor){
+        Integer pagoCategoria = montoCategoria(cat,klsLeche);
+        Integer pagoGrasa = pagoPorGrasa(porGrasa, klsLeche);
+        Integer pagoST = pagoPorSolidos(porST, klsLeche);
+        double bonos = bonificaciones(id_proveedor, pagoCategoria);
+        double pagos = pagoCategoria + pagoGrasa + pagoST;
+        double pagoAcopio = pagos + bonos;
+        return pagoAcopio;
+    }
+    @Generated
+    public void pagoTotal(PagoEntity pago, double pagoLeche){
+        double dcto = pago.getDctoVarST()+pago.getDctoVarGrasa()+pago.getDctoVarLeche();
+        double total = pagoLeche-dcto;
+        if (total < 0){
+            total= total*(-1);
+        }
+        pago.setPagoTotal(total);
+    }
+
+    @Generated
+    public void infoProveedorFecha(ProveedorEntity proveedor, List<AcopioEntity> acopiosProveedor, PagoEntity pago){
+        pago.setFecha(nuevaFecha(acopiosProveedor.get(0).getFecha().toString()));   // formato de fecha
+        pago.setCodigo(proveedor.getId_proveedor());
+        pago.setProveedor(proveedor);
+        pago.setNombreProveedor(proveedor.getNombre());
     }
 
     @Generated
@@ -90,40 +167,28 @@ public class PagoService {
         }else {
             Integer cant = (pagosProveedor.size() - 1);
             Double varLeche = variacion(pagosProveedor.get(cant).getTotalKlsLeche(), klsLeche);
-            Double varGrasa = variacion(pagosProveedor.get(cant).getPorGrasa(), porGrasa);
-            Double varSolidos = variacion(pagosProveedor.get(cant).getSolidosTotales(), porST);
+            Double varGrasa = varGrasaySolido(pagosProveedor.get(cant).getPorGrasa(), porGrasa);
+            Double varSolidos = varGrasaySolido(pagosProveedor.get(cant).getSolidosTotales(), porST);
             pagos.setVariacionLeche(varLeche);
             pagos.setVarGrasa(varGrasa);
             pagos.setVarST(varSolidos);
-            pagos.setDctoVarLeche(varNegLeche(pagos.getVariacionLeche()));
-            pagos.setDctoVarGrasa(varNegGrasa(pagos.getVarGrasa()));
-            pagos.setDctoVarST(varNegSolidos(pagos.getVarST()));
         }
     }
 
     @Generated
-    public double retencion(ProveedorEntity proveedor){
+    public void descuentos(PagoEntity pagos, double pagoTotal){
+        pagos.setDctoVarLeche(dctoLeche(pagos.getVariacionLeche(), pagoTotal));
+        pagos.setDctoVarGrasa(dctoGrasa(pagos.getVarGrasa(),pagoTotal));
+        pagos.setDctoVarST(dctoSolidos(pagos.getVarST(),pagoTotal));
+    }
+
+    @Generated
+    public double retencion(ProveedorEntity proveedor, double pagoTotal){
         double ret = 0.0;
         if (proveedor.getRetencion().toUpperCase().equals("SI")){
-            ret = 0.13;
+            ret = Math.round(0.13*pagoTotal);
         }
         return ret;
-    }
-
-    @Generated
-    public double descuentos(double pagoPorLeche, double varLeche, double varGrasa, double varST){
-        double desc = varNegLeche(varLeche)*pagoPorLeche + varNegGrasa(varGrasa)*pagoPorLeche + varNegSolidos(varST)*pagoPorLeche;
-        return desc;
-    }
-
-    @Generated
-    public double pagoAcopioLeche(String cat, Integer klsLeche, Integer porGrasa, Integer porST, Integer id_proveedor){
-        Integer pagoCategoria = montoCategoria(cat,klsLeche);
-        Integer pagoGrasa = pagoPorGrasa(porGrasa, klsLeche);
-        Integer pagoST = pagoPorSolidos(porST, klsLeche);
-        double bonos = bonificaciones(id_proveedor);
-        double pagoAcopio = pagoCategoria + pagoGrasa + pagoST + (pagoCategoria + pagoGrasa + pagoST) * bonos;
-        return pagoAcopio;
     }
 
     @Generated
@@ -174,6 +239,9 @@ public class PagoService {
                 contDias++;
             }
         }
+        if (contDias >15){
+            contDias = 15;
+        }
         return contDias;
     }
 
@@ -184,11 +252,11 @@ public class PagoService {
     }
 
     @Generated
-    public double bonificaciones(Integer id_proveedor) {
+    public double bonificaciones(Integer id_proveedor, double pagoLeche) {
         List<AcopioEntity> acopProv = proveedorRepository.findByIdProveedor(id_proveedor).getAcopios();
         List<Integer> list = mrngT(acopProv);
         double bono= porcent(list.get(0), list.get(1));
-        return bono;
+        return bono*pagoLeche;
     }
 
     @Generated
@@ -250,7 +318,7 @@ public class PagoService {
     public Integer pagoPorSolidos(Integer porSolidos, Integer kls_leche){
         if(porSolidos > 0 && porSolidos <= 7){
             return kls_leche*-130;
-        }if(porSolidos > 7 && porSolidos <= 18){
+        }if (porSolidos > 7 && porSolidos <= 18){
             return kls_leche*-90;
         }if(porSolidos > 18 && porSolidos <= 35) {
             return kls_leche * 95;
@@ -260,53 +328,23 @@ public class PagoService {
             return null;
         }
     }
-
-    public double variacion(Integer anterior, Integer actual){
-        double var = ((actual - anterior)/anterior) * 100;
-        return var;
+    @Generated
+    public static double variacion(double valorFinal, double valorInicial) {
+        double variacion = ((valorFinal - valorInicial) / valorInicial) * 100;
+        return variacion;
     }
 
-    public Integer varNegLeche(double variacion){
-        Integer desc = 0;
-        if (variacion >= 0 && variacion <= 8){
-            desc = 0;
-        } if (variacion > 8 && variacion < 26){
-            desc = 7;
-        } if (variacion > 25 && variacion < 46){
-            desc = 15;
-        } if (variacion > 46){
-            desc = 30;
+    @Generated
+    public Double varGrasaySolido(Integer nuevoTotal, Integer valor_antiguo){
+        Double variacion = 0.0;
+        variacion = (double)valor_antiguo - (double)nuevoTotal;
+        if(variacion < 0.0){
+            variacion = 0.0;
         }
-        return desc;
+        return (double) Math.round(variacion);
     }
 
-    public Integer varNegGrasa(double variacion){
-        Integer desc = 0;
-        if (variacion >= 0 && variacion <= 15){
-            desc = 0;
-        } if (variacion > 15 && variacion < 26){
-            desc = 12;
-        } if (variacion > 25 && variacion < 41){
-            desc = 20;
-        } if (variacion > 40){
-            desc = 30;
-        }
-        return desc;
-    }
 
-    public Integer varNegSolidos(double variacion){
-        Integer desc = 0;
-        if (variacion >= 0 && variacion <= 6){
-            desc = 0;
-        } if (variacion > 6 && variacion < 13){
-            desc = 18;
-        } if (variacion > 12 && variacion < 36){
-            desc = 27;
-        } if (variacion > 35){
-            desc = 45;
-        }
-        return desc;
-    }
 
 
 

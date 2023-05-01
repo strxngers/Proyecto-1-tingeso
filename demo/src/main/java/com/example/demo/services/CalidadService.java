@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import com.example.demo.entities.AcopioEntity;
 import com.example.demo.entities.CalidadEntity;
 import com.example.demo.entities.ProveedorEntity;
 import com.example.demo.repositories.CalidadRepository;
@@ -17,7 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,10 +30,6 @@ public class CalidadService {
     ProveedorRepository proveedorRepository;
 
     private final Logger logg = LoggerFactory.getLogger(CalidadService.class);
-
-    public ArrayList<CalidadEntity> obtenerData(){
-        return (ArrayList<CalidadEntity>) calidadRepository.findAll();
-    }
 
     @Generated
     public String guardar(MultipartFile file){
@@ -105,20 +102,25 @@ public class CalidadService {
         guardarData(newData);
     }
 
-    @Generated
-    public Integer getGrasa(CalidadEntity calidad){
+    public boolean existe(CalidadEntity calidad){
+        List<CalidadEntity> calidades = calidadRepository.findAll();
+        boolean flag = false;
+        Integer prov = calidad.getProveedor().getId_proveedor();
         Integer grasa = calidad.getPor_grasa();
-        return grasa;
-    }
-    @Generated
-    public Integer getST(CalidadEntity calidad){
-        Integer ST = calidad.getPor_solidos();
-        return ST;
+        Integer st = calidad.getPor_solidos();
+        for (CalidadEntity acalidad: calidades) {
+            if(acalidad.getProveedor().getId_proveedor().equals(prov) && acalidad.getPor_grasa().equals(grasa) && acalidad.getPor_solidos().equals(st)){
+                flag = true;
+                break;
+            }
+        }
+        return flag;
     }
 
-
-    @Generated
-    public void eliminarData(ArrayList<CalidadEntity> datas){
-        calidadRepository.deleteAll(datas);
+    public void delete(CalidadEntity calidad){
+        if(existe(calidad)){
+            calidadRepository.delete(calidad);
+        }
     }
+
 }
