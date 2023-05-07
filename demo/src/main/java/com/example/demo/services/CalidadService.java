@@ -1,6 +1,5 @@
 package com.example.demo.services;
 
-import com.example.demo.entities.AcopioEntity;
 import com.example.demo.entities.CalidadEntity;
 import com.example.demo.entities.ProveedorEntity;
 import com.example.demo.repositories.CalidadRepository;
@@ -18,7 +17,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,9 +71,7 @@ public class CalidadService {
                 }
             }
             texto = temp;
-            //System.out.println("Archivo leido exitosamente");
         }catch(Exception e){
-            //System.err.println("No se encontro el archivo");
         }finally{
             if(bf != null){
                 try{
@@ -98,8 +94,10 @@ public class CalidadService {
         newData.setPor_grasa(por_grasa);
         newData.setPor_solidos(por_solidos);
         Optional<ProveedorEntity> proveedor = proveedorRepository.findById(id_proveedor);
-        newData.setProveedor(proveedor.get());
-        guardarData(newData);
+        if (proveedor.isPresent()) {
+            newData.setProveedor(proveedor.get());
+            guardarData(newData);
+        }
     }
 
     public boolean existe(CalidadEntity calidad){

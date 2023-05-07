@@ -6,14 +6,14 @@ import lombok.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ProveedorService {
     @Autowired
     ProveedorRepository proveedorRepository;
 
-    // Método que crea un proveedor con la información entregada
+    @Generated
     public ProveedorEntity saveProveedor(Integer id_proveedor, String nombre, String categoria, String retencion) {
         ProveedorEntity proveedor = new ProveedorEntity(id_proveedor, nombre, categoria, retencion);
         if (!estaRegistrado(proveedor)) {
@@ -22,10 +22,9 @@ public class ProveedorService {
             return null;
     }
 
-    // Método que pone los proveedores en un array
     @Generated
-    public ArrayList<ProveedorEntity> listaProveedores(){
-        return (ArrayList<ProveedorEntity>) proveedorRepository.findAll();
+    public List<ProveedorEntity> listaProveedores(){
+        return proveedorRepository.findAll();
     }
 
     // Método que ve si el proveedor a ingresar ya se encuentra en la lista de proveedores
@@ -34,6 +33,7 @@ public class ProveedorService {
         return newProveedor != null;
     }
 
+    @Generated
     public void delete(ProveedorEntity proveedor){
         if(estaRegistrado(proveedor)){
             proveedorRepository.delete(proveedor);

@@ -26,7 +26,7 @@ public class PagoController {
         List<PagoEntity> pagos = pagoService.planillaPago();
 
         model.addAttribute("pagos", pagos);
-        return "/planillaPagos";
+        return "planillaPagos";
     }
 
 }

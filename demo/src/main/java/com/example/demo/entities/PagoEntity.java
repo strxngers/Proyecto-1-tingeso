@@ -45,11 +45,11 @@ public class PagoEntity {
     // creo que lo mejor es dejar la fecha como estaba en proveedor porque así podemos ver el
     // tema de la cantiadad de días en lo que mandó leche y después cambiarlos a este formato
     private String fecha; // AAAA/MM/QUINCENA
-    public PagoEntity(Integer totalKlsLeche, Integer porGrasa, Integer solidosTotales) {
-        this.totalKlsLeche = totalKlsLeche;
-        this.porGrasa = porGrasa;
-        this.solidosTotales = solidosTotales;
+
+    public PagoEntity(double bonoFrecuencia, double dctoVarLeche, double dctoVarGrasa, double dctoVarST) {
+        this.bonoFrecuencia = bonoFrecuencia;
+        this.dctoVarLeche = dctoVarLeche;
+        this.dctoVarGrasa = dctoVarGrasa;
+        this.dctoVarST = dctoVarST;
     }
-
-
 }

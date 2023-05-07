@@ -33,4 +33,9 @@ public class ProveedorEntity {
         this.categoria = categoria;
         this.retencion = retencion;
     }
+
+    public ProveedorEntity(Integer id_proveedor, String nombre) {
+        this.id_proveedor = id_proveedor;
+        this.nombre = nombre;
+    }
 }

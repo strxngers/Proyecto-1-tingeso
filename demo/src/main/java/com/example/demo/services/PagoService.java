@@ -4,8 +4,6 @@ import com.example.demo.entities.AcopioEntity;
 import com.example.demo.entities.CalidadEntity;
 import com.example.demo.entities.PagoEntity;
 import com.example.demo.entities.ProveedorEntity;
-import com.example.demo.repositories.AcopioRepository;
-import com.example.demo.repositories.CalidadRepository;
 import com.example.demo.repositories.PagoRepository;
 import com.example.demo.repositories.ProveedorRepository;
 import lombok.Generated;
@@ -21,19 +19,14 @@ public class PagoService {
     @Autowired
     private AcopioService acopioService;
     @Autowired
-    private AcopioRepository acopioRepository;
-    @Autowired
     private ProveedorService proveedorService;
     @Autowired
     private ProveedorRepository proveedorRepository;
-    @Autowired
-    private CalidadRepository calidadRepository;
 
     @Generated
     public List<PagoEntity> planillaPago(){
         planillaProveedores();
-        List<PagoEntity> pagos = pagoRepository.findAll();
-        return pagos;
+        return pagoRepository.findAll();
     }
     @Generated
     public void planillaProveedores(){
@@ -44,8 +37,6 @@ public class PagoService {
         }
     }
 
-    // PROBLEMAS: % DE SOLIDOS
-    //            PAGO TOTAL
     @Generated
     public void calcularPago(Integer id_proveedor){
         ProveedorEntity proveedor = proveedorRepository.findByIdProveedor(id_proveedor);    // Encontrar al proveedor para poder saber cuantos kilos de leche trajo
@@ -87,46 +78,51 @@ public class PagoService {
         }
     }
 
-    public double dctoLeche(double variacion, double pagoTotal){
-        Integer desc = 0;
-        if (variacion >= 0 && variacion <= 8){
-            desc = 0;
-        }else if (variacion > 8 && variacion < 26){
-            desc = 7;
-        }else if (variacion > 25 && variacion < 46){
-            desc = 15;
-        }else if (variacion > 46){
-            desc = 30;
+    public  Double dctoLeche(Double variacion, Double pagoLeche){
+        Double dcto = 0.0;
+        if(variacion >=0 && variacion <= 8){
+            dcto = 0.0 * pagoLeche;
         }
-        return desc*pagoTotal;
+        if(variacion >= 9 && variacion <= 25){
+            dcto = 0.07 * pagoLeche;
+        }
+        if(variacion >= 26 && variacion <= 45){
+            dcto = 0.15 * pagoLeche;
+        }
+        if(variacion >= 46){
+            dcto = 0.3 * pagoLeche;
+        }
+        dcto = Math.round(dcto*100.0)/100.0;
+        return dcto;
     }
 
-    public double dctoGrasa(double variacion, double pagoTotal){
-        Integer desc = 0;
-        if (variacion >= 0 && variacion <= 15){
+    public double dctoGrasa(double variacion, double pagoTotal) {
+        double desc = 0;
+        if (variacion >= 0 && variacion <= 15) {
             desc = 0;
-        } else if (variacion > 15 && variacion < 26){
-            desc = 12;
-        } else if (variacion > 25 && variacion < 41){
-            desc = 20;
-        } else if (variacion > 40){
-            desc = 30;
+        } else if (variacion >= 16 && variacion <= 25) {
+            desc = 0.12;
+        } else if (variacion >= 26 && variacion <= 40) {
+            desc = 0.2;
+        } else if (variacion >= 41) {
+            desc = 0.3;
         }
-        return desc*pagoTotal;
+        return desc * pagoTotal;
     }
 
-    public double dctoSolidos(double variacion, double pagoTotal){
-        Integer desc = 0;
-        if (variacion >= 0 && variacion <= 6){
+
+    public double dctoSolidos(double variacion, double pagoTotal) {
+        double desc = 0;
+        if (variacion >= 0 && variacion <= 6) {
             desc = 0;
-        }else if (variacion > 6 && variacion < 13){
-            desc = 18;
-        }else if (variacion > 12 && variacion < 36){
-            desc = 27;
-        }else if (variacion > 35){
-            desc = 45;
+        } else if (variacion > 6 && variacion < 13) {
+            desc = 0.18;
+        } else if (variacion > 12 && variacion < 36) {
+            desc = 0.27;
+        } else if (variacion > 35) {
+            desc = 0.45;
         }
-        return Math.round(desc*pagoTotal);
+        return Math.round(desc * pagoTotal);
     }
 
     @Generated
@@ -135,11 +131,11 @@ public class PagoService {
         Integer pagoGrasa = pagoPorGrasa(porGrasa, klsLeche);
         Integer pagoST = pagoPorSolidos(porST, klsLeche);
         double bonos = bonificaciones(id_proveedor, pagoCategoria);
-        double pagos = pagoCategoria + pagoGrasa + pagoST;
-        double pagoAcopio = pagos + bonos;
-        return pagoAcopio;
+        double pagos = pagoCategoria + pagoGrasa + (double)pagoST;
+        return (pagos + bonos);
+
     }
-    @Generated
+
     public void pagoTotal(PagoEntity pago, double pagoLeche){
         double dcto = pago.getDctoVarST()+pago.getDctoVarGrasa()+pago.getDctoVarLeche();
         double total = pagoLeche-dcto;
@@ -149,7 +145,6 @@ public class PagoService {
         pago.setPagoTotal(total);
     }
 
-    @Generated
     public void infoProveedorFecha(ProveedorEntity proveedor, List<AcopioEntity> acopiosProveedor, PagoEntity pago){
         pago.setFecha(nuevaFecha(acopiosProveedor.get(0).getFecha().toString()));   // formato de fecha
         pago.setCodigo(proveedor.getId_proveedor());
@@ -175,17 +170,15 @@ public class PagoService {
         }
     }
 
-    @Generated
     public void descuentos(PagoEntity pagos, double pagoTotal){
         pagos.setDctoVarLeche(dctoLeche(pagos.getVariacionLeche(), pagoTotal));
         pagos.setDctoVarGrasa(dctoGrasa(pagos.getVarGrasa(),pagoTotal));
         pagos.setDctoVarST(dctoSolidos(pagos.getVarST(),pagoTotal));
     }
 
-    @Generated
     public double retencion(ProveedorEntity proveedor, double pagoTotal){
         double ret = 0.0;
-        if (proveedor.getRetencion().toUpperCase().equals("SI")){
+        if (proveedor.getRetencion().equalsIgnoreCase("SI")){
             ret = Math.round(0.13*pagoTotal);
         }
         return ret;
@@ -205,7 +198,7 @@ public class PagoService {
         }
         return flag;
     }
-    @Generated
+
     public String nuevaFecha(String fecha){
         return fecha.substring(0, fecha.length() - 2) + acopioService.quincena(fecha).toString();
     }
@@ -233,9 +226,9 @@ public class PagoService {
             LocalDate fechaB = acopioB.getFecha();
             String turnoA = acopioA.getTurno();
             String turnoB = acopioB.getTurno();
-            if (fechaA.equals(fechaB) && turnoA != null && turnoB != null && !turnoA.equals(turnoB)) {
+            if (fechaA.equals(fechaB) && turnoA != null && turnoB != null && !turnoA.equals(turnoB)){
                 contDias++;
-            } else if (!fechaA.equals(fechaB) && turnoA != null && turnoB != null) {
+            } else if (!fechaA.equals(fechaB) && turnoA != null && turnoB != null){
                 contDias++;
             }
         }
@@ -245,10 +238,8 @@ public class PagoService {
         return contDias;
     }
 
-    @Generated
     public double promKls(Integer klsLeche, Integer diasEnvio) {
-        double prom = klsLeche / diasEnvio;
-        return prom;
+        return (double)klsLeche / diasEnvio;
     }
 
     @Generated
@@ -259,7 +250,6 @@ public class PagoService {
         return bono*pagoLeche;
     }
 
-    @Generated
     public List<Integer> mrngT(List<AcopioEntity> acopiosProv) {
         Integer acopiosMrng = 0;
         Integer acopiosTarde = 0;
@@ -270,34 +260,32 @@ public class PagoService {
                 acopiosTarde++;
             }
         }
-        List<Integer> list = List.of(acopiosMrng, acopiosTarde);
-        return list;
+        return List.of(acopiosMrng, acopiosTarde);
     }
 
-
-    public double porcent(int mrng, int tarde){
-        if (mrng >= 10 && tarde >= 10){
+    public double porcent(int mrng, int tarde) {
+        if (mrng >= 10 && tarde >= 10) {
             return 0.2;
-        }else if (mrng >= 10 && tarde < 10){
+        } else if (mrng >= 10 && tarde < 10) {
             return 0.12;
-        }else if (tarde >= 10 && mrng < 10){
+        } else if (tarde >= 10 && mrng < 10) {
             return 0.08;
-        }else
+        } else {
             return 0.0;
+        }
     }
 
-    @Generated
-    public Integer montoCategoria(String categoria, Integer kls_leche){ // Cambiar
-        if(categoria.toUpperCase().equals("A")){
+    public Integer montoCategoria(String categoria, Integer kls_leche){
+        if(categoria.equalsIgnoreCase("A")){
             return 700*kls_leche;
         }
-        if(categoria.toUpperCase().equals("B")){
+        if(categoria.equalsIgnoreCase("B")){
             return 550*kls_leche;
         }
-        if (categoria.toUpperCase().equals("C")){
+        if (categoria.equalsIgnoreCase("C")){
             return 400*kls_leche;
         }
-        if (categoria.toUpperCase().equals("D")){
+        if (categoria.equalsIgnoreCase("D")){
             return 250*kls_leche;
         }else
         return kls_leche;
@@ -328,24 +316,16 @@ public class PagoService {
             return null;
         }
     }
-    @Generated
+
     public static double variacion(double valorFinal, double valorInicial) {
-        double variacion = ((valorFinal - valorInicial) / valorInicial) * 100;
-        return variacion;
+        return ((valorFinal - valorInicial) / valorInicial) * 100;
     }
 
-    @Generated
     public Double varGrasaySolido(Integer nuevoTotal, Integer valor_antiguo){
-        Double variacion = 0.0;
-        variacion = (double)valor_antiguo - (double)nuevoTotal;
+        double variacion = (double)valor_antiguo - (double)nuevoTotal;
         if(variacion < 0.0){
             variacion = 0.0;
         }
         return (double) Math.round(variacion);
     }
-
-
-
-
-
 }

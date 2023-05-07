@@ -18,8 +18,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -74,9 +72,7 @@ public class AcopioService {
                 }
             }
             texto = temp;
-            //System.out.println("Archivo leido exitosamente");
         }catch(Exception e){
-            //System.err.println("No se encontro el archivo");
         }finally{
             if(bf != null){
                 try{
@@ -101,37 +97,20 @@ public class AcopioService {
         newData.setTurno(turno);
         newData.setKls_leche(kls_leche);
         Optional<ProveedorEntity> proveedor = proveedorRepository.findById(id_proveedor);
-        newData.setProveedor(proveedor.get());
-        if(!exist(newData)){
+        if (proveedor.isPresent()) {
+            newData.setProveedor(proveedor.get());
             guardarData(newData);
         }
-        //guardarData(newData);
     }
-
-    @Generated
-    public boolean exist(AcopioEntity ac){
-        List<AcopioEntity> acopios = acopioRepository.findAll();
-        boolean flag = false;
-        Integer pac1 = ac.getProveedor().getId_proveedor();
-        LocalDate fecha = ac.getFecha();
-        String turno = ac.getTurno();
-        for (AcopioEntity acopio : acopios) {
-            if (acopio.getProveedor().getId_proveedor().equals(pac1) && acopio.getFecha().equals(fecha) && acopio.getTurno().equals(turno)) {
-                flag = true;
-                break;
-            }
-        }
-        return flag;
-    }
-
 
     public Integer quincena(String fecha){
+        Integer quincena = 0;
         if(Integer.parseInt(fecha.substring(8)) <= mitadMes){
-            return 1;
+            quincena = 1;
         }else if(Integer.parseInt(fecha.substring(8)) >= mitadMes){
-            return 2;
-        }else
-            return null;
+            quincena = 2;
+        }
+        return quincena;
     }
 
 
