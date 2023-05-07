@@ -1,6 +1,6 @@
 jenkins.war
 sonarqube-10.0.0.68432
-demo/data
+demo/data/
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
