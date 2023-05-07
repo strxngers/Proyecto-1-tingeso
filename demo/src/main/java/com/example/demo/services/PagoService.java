@@ -239,7 +239,7 @@ public class PagoService {
     }
 
     public double promKls(Integer klsLeche, Integer diasEnvio) {
-        return (double)klsLeche / diasEnvio;
+        return Math.round((double)klsLeche / diasEnvio);
     }
 
     @Generated
