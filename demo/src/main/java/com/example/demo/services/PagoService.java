@@ -318,7 +318,7 @@ public class PagoService {
     }
 
     public static double variacion(double valorFinal, double valorInicial) {
-        return ((valorFinal - valorInicial) / valorInicial) * 100;
+        return Math.round(((valorFinal - valorInicial) / valorInicial) * 100);
     }
 
     public Double varGrasaySolido(Integer nuevoTotal, Integer valor_antiguo){
