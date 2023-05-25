@@ -27,7 +27,7 @@ public class AcopioController {
     public String upload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
         acopioData.guardar(file);
         acopioData.leerCsv("Acopio.csv");
-        return "redirect:/calidadFileUpload";
+        return "redirect:/uploadAcopioData";
     }
 
 
